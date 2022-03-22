@@ -4,7 +4,6 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Room
 from .serializers import RoomSerializer, CreateRoomSerializer
-from api import serializers
 
 class RoomView(generics.ListAPIView):
     queryset = Room.objects.all()
