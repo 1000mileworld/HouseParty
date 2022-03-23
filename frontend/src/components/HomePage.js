@@ -1,30 +1,30 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import RoomJoinPage from "./RoomJoinPage";
 import CreateRoomPage from "./CreateRoomPage";
 import Room from "./Room";
 import { Grid, Button, ButtonGroup, Typography } from '@material-ui/core';
 import { BrowserRouter as Router, Routes, Route, Link, Navigate, Redirect } from 'react-router-dom';
 
-export default class HomePage extends Component {
-    constructor(props){
-        super(props);
-        this.state = {
-            roomCode: null,
-        }
-    }
+function HomePage(props) {
+    const [roomCode, setRoomCode] = useState(null)
+    // useEffect(() => {
+    //     fetch('/api/user-in-room').then((response)=>response.json())
+    //     .then((data)=>{
+    //         setRoomCode(data.code)
+    //     });
+    // });
 
-    async componentDidMount() {
-        fetch('/api/user-in-room').then((response)=>response.json())
+    let RenderHomePage = () => {
+        //check user in room here instead of useEffect
+        //prevent error where user has another tab open to the same room, deletes room in that tab, and tries to click leave room in the original tab
+        fetch('/api/user-in-room').then((response)=>response.json()) 
         .then((data)=>{
-            this.setState({
-                roomCode: data.code
-            })
+            setRoomCode(data.code)
         });
-    }
-    renderHomePage() {
-        if(this.state.roomCode){
+        if(roomCode){
             //use Navigate instead of Redirect; replace=true replaces location in browsing history stack
-            return <Navigate to={`/room/${this.state.roomCode}`} replace={true}/>
+            //console.log(`trying to redirect to room ${roomCode}`)
+            return <Navigate to={`/room/${roomCode}`} replace={true}/>
         }
         return(
             <Grid container spacing={3}>
@@ -38,18 +38,20 @@ export default class HomePage extends Component {
                     </ButtonGroup>
                 </Grid>
             </Grid>
-        );
+        );       
     }
-    render() {
-        return (
-            <Router>
-                <Routes>
-                    <Route path="/" element={this.renderHomePage()}/>
-                    <Route path="/join" element={<RoomJoinPage/>} />
-                    <Route path="/create" element={<CreateRoomPage/>} />
-                    <Route path="/room/:roomCode" element={<Room/>} />
-                </Routes>
-            </Router>
-        );
+    const clearRoomCode = () => {
+        setRoomCode(null)
     }
-}
+    return (
+        <Router>
+            <Routes>
+                <Route path="/" element={<RenderHomePage/>}/>
+                <Route path="/join" element={<RoomJoinPage/>} />
+                <Route path="/create" element={<CreateRoomPage/>} />
+                <Route path="/room/:roomCode" element={<Room leaveRoomCallback={clearRoomCode}/>} />
+            </Routes>
+        </Router>
+    );
+};
+export default HomePage
