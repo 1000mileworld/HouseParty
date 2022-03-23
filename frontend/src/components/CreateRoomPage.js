@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
-import { Button, Grid, Typography, TextField, FormControl, FormControlLabel, Radio, RadioGroup, FormHelperText } from '@material-ui/core';
+import { Button, Grid, Typography, TextField, FormControl, FormControlLabel, Radio, RadioGroup, FormHelperText, Collapse } from '@material-ui/core';
 import { Link, useNavigate } from 'react-router-dom';
+import Alert from '@material-ui/lab/Alert';
 
+CreateRoomPage.defaultProps = {
+    votesToSkip: 2,
+    guestCanPause: true,
+    update: false,
+    roomCode: null,
+    updateCallback: () =>{}
+}
 function CreateRoomPage(props) {
-    const defaultVotes = 2;
-    const [votesToSkip, setVotesToSkip] = useState(defaultVotes);
-    const [guestCanPause, setGuestCanPause] = useState(true);
+    const [votesToSkip, setVotesToSkip] = useState(props.votesToSkip);
+    const [guestCanPause, setGuestCanPause] = useState(props.guestCanPause);
+    const [errorMsg, setErrorMsg] = useState("");
+    const [successMsg, setSuccessMsg] = useState("");
     const history = useNavigate();
 
     const handleVotesChange = (e) => {
@@ -31,11 +40,62 @@ function CreateRoomPage(props) {
         .then((data) => history("/room/" + data.code));
     }
 
+    const updateButtonPressed = () => {
+        const requestOptions = {
+            method: 'PATCH',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                votes_to_skip: votesToSkip,
+                guest_can_pause: guestCanPause,
+                code: props.roomCode
+            }),
+        };
+        fetch('/api/update-room', requestOptions)
+        .then((response)=>{
+            if(response.ok){
+                setSuccessMsg("Room updated successfully!")
+            }else{
+                setErrorMsg("Error updating room...")
+            }
+            props.updateCallback
+        })
+    }
+
+    let CreateButtons = () => {
+        return(
+            <Grid container spacing={1}>
+                <Grid item xs={12} align="center">
+                    <Button color="primary" variant="contained" onClick={createRoomButtonPressed}>Create a Room</Button>
+                </Grid>
+                <Grid item xs={12} align="center">
+                    <Button color="secondary" variant="contained" to="/" component={Link}>Back</Button>
+                </Grid>
+            </Grid>
+        );
+    }
+    let UpdateButtons = () => {
+        return (
+            <Grid item xs={12} align="center">
+              <Button color="primary" variant="contained" onClick={()=>updateButtonPressed()}>Update Room</Button>
+            </Grid>
+        );
+    }
+
+    const title = props.update? "Update Room:" : "Create a Room"
     return (//comes from material-ui
-        <Grid container spacing={1}> 
+        <Grid container spacing={1}>
+            <Grid item xs={12} align="center">
+                <Collapse in={errorMsg!="" || successMsg!=""}>
+                    {successMsg || !errorMsg ? //!errorMsg prevents alert from turning red when closing
+                    <Alert severity="success" onClose={() => setSuccessMsg("")}>{successMsg}</Alert>
+                    :
+                    <Alert severity="error" onClose={() => setErrorMsg("")}>{errorMsg}</Alert>
+                    }
+                </Collapse>
+            </Grid> 
             <Grid item xs={12} align="center">
                 <Typography component='h4' variant='h4'>
-                    Create a Room
+                    {title}
                 </Typography>
             </Grid>
             <Grid item xs={12} align="center">
@@ -43,7 +103,7 @@ function CreateRoomPage(props) {
                     <FormHelperText component="span">
                         <div align="center">Guest Control of Playback State</div>
                     </FormHelperText>
-                    <RadioGroup row defaultValue='true' onChange={handleGuestCanPauseChange}>
+                    <RadioGroup row defaultValue={props.guestCanPause.toString()} onChange={handleGuestCanPauseChange}>
                         <FormControlLabel
                             value='true'
                             control={<Radio color='primary'/>}
@@ -65,7 +125,7 @@ function CreateRoomPage(props) {
                         required={true}
                         type='number'
                         onChange={handleVotesChange}
-                        defaultValue={defaultVotes}
+                        defaultValue={votesToSkip}
                         inputProps={{
                             min: 1,
                             style: {textAlign: 'center'}
@@ -76,12 +136,7 @@ function CreateRoomPage(props) {
                     </FormHelperText>
                 </FormControl>
             </Grid>
-            <Grid item xs={12} align="center">
-                <Button color="primary" variant="contained" onClick={createRoomButtonPressed}>Create a Room</Button>
-            </Grid>
-            <Grid item xs={12} align="center">
-                <Button color="secondary" variant="contained" to="/" component={Link}>Back</Button>
-            </Grid>
+            {props.update? <UpdateButtons/> : <CreateButtons/> }
         </Grid> 
     );
 };
