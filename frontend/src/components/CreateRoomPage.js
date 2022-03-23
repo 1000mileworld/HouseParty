@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button, Grid, Typography, TextField, FormControl, FormControlLabel, Radio, RadioGroup, FormHelperText } from '@material-ui/core';
 import { Link, useNavigate } from 'react-router-dom';
 
-function CreateRoomPage() {
+function CreateRoomPage(props) {
     const defaultVotes = 2;
     const [votesToSkip, setVotesToSkip] = useState(defaultVotes);
     const [guestCanPause, setGuestCanPause] = useState(true);
@@ -16,7 +16,7 @@ function CreateRoomPage() {
         setGuestCanPause(e.target.value==='true' ? true : false)
     }
 
-    const handleRoomButtonPressed = () => {
+    const createRoomButtonPressed = () => {
         const requestOptions = {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -77,7 +77,7 @@ function CreateRoomPage() {
                 </FormControl>
             </Grid>
             <Grid item xs={12} align="center">
-                <Button color="primary" variant="contained" onClick={handleRoomButtonPressed}>Create a Room</Button>
+                <Button color="primary" variant="contained" onClick={createRoomButtonPressed}>Create a Room</Button>
             </Grid>
             <Grid item xs={12} align="center">
                 <Button color="secondary" variant="contained" to="/" component={Link}>Back</Button>
