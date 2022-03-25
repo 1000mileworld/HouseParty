@@ -5,6 +5,22 @@ import PauseIcon from "@material-ui/icons/Pause";
 import SkipNextIcon from "@material-ui/icons/SkipNext";
 
 function MusicPlayer(props) {
+    const pauseSong = () => {
+        const requestOptions = {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+        };
+         fetch("/spotify/pause", requestOptions);
+    }
+
+    const playSong = () => {
+        const requestOptions = {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+        };
+        fetch("/spotify/play", requestOptions);
+    }
+
     const songProgress = (props.time / props.duration) * 100;
     return (
         <Card>
@@ -20,7 +36,9 @@ function MusicPlayer(props) {
                 {props.artist}
               </Typography>
               <div>
-                <IconButton>
+                <IconButton onClick={() => {
+                  props.is_playing ? pauseSong() : playSong();
+                }}>
                   {props.is_playing ? <PauseIcon /> : <PlayArrowIcon />}
                 </IconButton>
                 <IconButton>

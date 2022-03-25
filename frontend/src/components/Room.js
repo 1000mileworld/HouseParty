@@ -71,8 +71,8 @@ function Room(props) {
         .then((data) => {
             setTimeout(function() {
                 setSong(data);
-                console.log(data);
-            },1000) //delay in setting state to prevent constant re-render
+                //console.log(data);
+            },1) //delay in setting state to prevent constant re-render (but buttons need to change quickly)
         });
     }
 
