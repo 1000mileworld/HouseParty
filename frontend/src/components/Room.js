@@ -62,6 +62,7 @@ function Room(props) {
         })
     }
 
+    //moved method to music player so it doesn't continuously re-render whole page while updating song state
     const getCurrentSong = () => {
         fetch("/spotify/current-song")
         .then((response) => {
@@ -121,7 +122,7 @@ function Room(props) {
     }
 
     getRoomDetails()
-    getCurrentSong()
+    //getCurrentSong()
 
     if(showSettings) {
         return <RenderSettings />
@@ -130,7 +131,7 @@ function Room(props) {
         <Grid container spacing={1}>
             <Grid item xs={12} align="center">
                 <Collapse in={displayInfo}>
-                    <Alert severity="info" onClose={()=>setDisplayInfo(false)}>Host must start first song from Spotify. Play/pause requires a premium account.</Alert>
+                    <Alert severity="warning" onClose={()=>setDisplayInfo(false)}>Host must start first song from Spotify. Play/pause requires a premium account.</Alert>
                 </Collapse>
             </Grid>
             <Grid item xs={12} align="center">
