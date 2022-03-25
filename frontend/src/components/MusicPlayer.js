@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Grid, Typography, Card, IconButton, LinearProgress } from "@material-ui/core";
+import { Grid, Typography, Card, IconButton, LinearProgress, Collapse } from "@material-ui/core";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import PauseIcon from "@material-ui/icons/Pause";
 import SkipNextIcon from "@material-ui/icons/SkipNext";
+import Alert from '@material-ui/lab/Alert';
 
 const defaultTitle = "Unknown Title";
 const defaultArtist = "Unknown Artist";
@@ -11,8 +12,11 @@ const defaultImage_url = "https://n-magazine.com/wp-content/uploads/2021/04/spot
 function MusicPlayer(props) {
   const [song, setSong] = useState({
     time: 1,
-    duration: 1,  
+    duration: 1,  //just make song object is not undefined
   });
+  
+  const [displayInfo, setDisplayInfo] = useState(true);
+
   useEffect(() => {
     let interval = setInterval(() => {
       fetch("/spotify/current-song")
@@ -26,6 +30,7 @@ function MusicPlayer(props) {
       .then((data) => {
         if(data){
           setSong(data);
+          setDisplayInfo(false)
         }
       });
     }, 1000);
@@ -60,6 +65,11 @@ function MusicPlayer(props) {
   return (
       <Card>
         <Grid container alignItems="center">
+          <Grid item xs={12} align="center">
+              <Collapse in={displayInfo}>
+                  <Alert severity="warning" onClose={()=>setDisplayInfo(false)}>Host must start first song from Spotify. Play/pause control requires a premium account.</Alert>
+              </Collapse>
+          </Grid>
           <Grid item align="center" xs={4}>
             <img src={song.image_url || defaultImage_url} height="100%" width="100%" />
           </Grid>

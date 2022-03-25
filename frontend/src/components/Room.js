@@ -1,9 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useParams, useNavigate, Navigate } from 'react-router-dom';
-import { Grid, Button, Typography, Collapse } from "@material-ui/core";
+import { Grid, Button, Typography } from "@material-ui/core";
 import CreateRoomPage from "./CreateRoomPage";
 import MusicPlayer from "./MusicPlayer";
-import Alert from '@material-ui/lab/Alert';
 
 function Room(props) {
     const { roomCode } = useParams(); //must use with react router dom v6, only compatible with function component
@@ -16,7 +15,6 @@ function Room(props) {
     const [spotifyAuthenticated, setSpotifyAuthenticated] = useState(false);
     const [song, setSong] = useState({});
     const [hasSong, setHasSong] = useState(true);
-    const [displayInfo, setDisplayInfo] = useState(true);
 
     const getRoomDetails = () => {
         fetch('/api/get-room'+'?code='+roomCode)
@@ -129,11 +127,6 @@ function Room(props) {
     }
     return (
         <Grid container spacing={1}>
-            <Grid item xs={12} align="center">
-                <Collapse in={displayInfo}>
-                    <Alert severity="warning" onClose={()=>setDisplayInfo(false)}>Host must start first song from Spotify. Play/pause requires a premium account.</Alert>
-                </Collapse>
-            </Grid>
             <Grid item xs={12} align="center">
                 <Typography variant="h4" component="h4">Code: {roomCode}</Typography>
             </Grid>
