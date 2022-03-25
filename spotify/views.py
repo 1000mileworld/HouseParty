@@ -151,15 +151,16 @@ class SkipSong(APIView):
         votes = Vote.objects.filter(room=room, song_id=room.current_song)
         votes_needed = room.votes_to_skip
 
+        if Vote.objects.filter(user=self.request.session.session_key).exists():
+            print('User is trying to vote more than once!')
+            return Response({'message': 'Same user cannot vote more than once!'}, status.HTTP_403_FORBIDDEN)
+
         #len(votes)+1 means current skip vote has not been added, but if it were, do we have enough skip votes
         if self.request.session.session_key == room.host or len(votes) + 1 >= votes_needed:
             votes.delete()
             skip_song(room.host)
         else:
-            if Vote.objects.filter(user=self.request.session.session_key).exists():
-                print('User is trying to vote more than once!')
-            else:
-                vote = Vote(user=self.request.session.session_key, room=room, song_id=room.current_song)
-                vote.save()
+            vote = Vote(user=self.request.session.session_key, room=room, song_id=room.current_song)
+            vote.save()
 
         return Response({}, status.HTTP_204_NO_CONTENT)
