@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useParams, useNavigate, Navigate } from 'react-router-dom';
-import { Grid, Button, Typography } from "@material-ui/core";
+import { Grid, Button, Typography, Collapse } from "@material-ui/core";
 import CreateRoomPage from "./CreateRoomPage";
 import MusicPlayer from "./MusicPlayer";
+import Alert from '@material-ui/lab/Alert';
 
 function Room(props) {
     const { roomCode } = useParams(); //must use with react router dom v6, only compatible with function component
@@ -14,6 +15,8 @@ function Room(props) {
     const [showSettings, setShowSettings] = useState(false);
     const [spotifyAuthenticated, setSpotifyAuthenticated] = useState(false);
     const [song, setSong] = useState({});
+    const [hasSong, setHasSong] = useState(true);
+    const [displayInfo, setDisplayInfo] = useState(true);
 
     const getRoomDetails = () => {
         fetch('/api/get-room'+'?code='+roomCode)
@@ -65,7 +68,18 @@ function Room(props) {
           if (!response.ok) {
             return {};
           } else {
-            return response.json();
+            // try { 
+            //     //won't be able to parse response into json if no song playing
+            //     const json = JSON.parse(response); //doesn't work on legit response either
+            //   } catch (e) {
+            //     console.log("Please start playing a song in your Spotify account")
+            //     setHasSong(false);
+            //     return {}; //invalid json
+            //   }
+            // setHasSong(true);
+            
+            //response.json() returns a Promise
+            return response.json().catch(() => console.log('No song found playing in Spotify.'));
           }
         })
         .then((data) => {
@@ -114,6 +128,11 @@ function Room(props) {
     }
     return (
         <Grid container spacing={1}>
+            <Grid item xs={12} align="center">
+                <Collapse in={displayInfo}>
+                    <Alert severity="info" onClose={()=>setDisplayInfo(false)}>Host must start first song from Spotify. Play/pause requires a premium account.</Alert>
+                </Collapse>
+            </Grid>
             <Grid item xs={12} align="center">
                 <Typography variant="h4" component="h4">Code: {roomCode}</Typography>
             </Grid>

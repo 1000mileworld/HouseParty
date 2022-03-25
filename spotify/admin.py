@@ -1,4 +1,4 @@
 from django.contrib import admin
-from .models import SpotifyToken
+from .models import *
 
-admin.site.register(SpotifyToken)
+admin.site.register([SpotifyToken, Vote])
