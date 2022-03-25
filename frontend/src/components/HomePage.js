@@ -33,7 +33,7 @@ function HomePage(props) {
                     <Typography variant="h3" component="h3">House Party</Typography>
                 </Grid>
                 <Grid item xs={12} align="center">
-                    <ButtonGroup disableElevation variant="contained" color="primary">
+                    <ButtonGroup disableElevation variant="contained" color="primary" className='frontpage-buttons'>
                         <Button color="primary" to="/join" component={Link}>Join a Room</Button>
                         <Button color="default" to="/info" component={Link}>Info</Button>
                         <Button color="secondary" to="/create" component={Link}>Create a Room</Button>

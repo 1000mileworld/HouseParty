@@ -65,15 +65,15 @@ function MusicPlayer(props) {
   return (
       <Card>
         <Grid container alignItems="center">
-          <Grid item xs={12} align="center">
+          <Grid item md={12} align="center">
               <Collapse in={displayInfo}>
                   <Alert severity="warning" onClose={()=>setDisplayInfo(false)}>Host must start first song from Spotify. Play/pause control requires a premium account.</Alert>
               </Collapse>
           </Grid>
-          <Grid item align="center" xs={4}>
+          <Grid item align="center" md={4}>
             <img src={song.image_url || defaultImage_url} height="100%" width="100%" />
           </Grid>
-          <Grid item align="center" xs={8}>
+          <Grid item align="center" md={8} id="media-control">
             <Typography component="h5" variant="h5">
               {song.title || defaultTitle}
             </Typography>
@@ -81,15 +81,17 @@ function MusicPlayer(props) {
               {song.artist || defaultArtist}
             </Typography>
             <div>
-              <IconButton onClick={() => {
-                song.is_playing ? pauseSong() : playSong();
-              }}>
-                {song.is_playing ? <PauseIcon /> : <PlayArrowIcon />}
-              </IconButton>
-              <IconButton onClick={() => skipSong()}>
-                <SkipNextIcon />
-              </IconButton> 
-              {`(${song.votes || 0} / ${song.votes_required || 0} skip votes)`}
+              <div>
+                <IconButton onClick={() => {
+                  song.is_playing ? pauseSong() : playSong();
+                }}>
+                  {song.is_playing ? <PauseIcon /> : <PlayArrowIcon />}
+                </IconButton>
+                <IconButton onClick={() => skipSong()}>
+                  <SkipNextIcon />
+                </IconButton> 
+              </div>
+              <div>{`(${song.votes || 0} / ${song.votes_required || 0} skip votes)`}</div>
             </div>
           </Grid>
         </Grid>

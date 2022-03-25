@@ -14,11 +14,11 @@ export default function AppInfo(props) {
   const [dummy, setDummy] = useState(false)
 
   function joinInfo() {
-    return "House party creates a private space for people to get together virtually and listen to their favorite music. If there's an ongoing party you want to join, just ask your host for the room code. If you don't like the song being played, vote to skip it!";
+    return "House party creates an engaging listening experience for your party guests by making their voices heard. If you're a guest, ask your host for the room code of your party to join, and if you don't like the song currently being played, vote to skip it!";
   }
 
   function createInfo() {
-    return "To host a house party, you must have a Spotify account to play music and a premium acount to control the music using play/pause on this app. A host can also set allowed guest behavior such as play/pause and number of votes needed to skip a song.";
+    return "To host a house party, you must have a Spotify account to play music and a premium account to control the music using play/pause on this app. A host can also set allowed guest behavior such as play/pause and number of votes needed to skip a song.";
   }
 
 //   useEffect(() => {
