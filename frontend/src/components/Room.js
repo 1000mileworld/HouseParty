@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useParams, useNavigate, Navigate } from 'react-router-dom';
 import { Grid, Button, Typography } from "@material-ui/core";
 import CreateRoomPage from "./CreateRoomPage";
+import MusicPlayer from "./MusicPlayer";
 
 function Room(props) {
     const { roomCode } = useParams(); //must use with react router dom v6, only compatible with function component
@@ -13,10 +14,6 @@ function Room(props) {
     const [showSettings, setShowSettings] = useState(false);
     const [spotifyAuthenticated, setSpotifyAuthenticated] = useState(false);
     const [song, setSong] = useState({});
-
-    // useEffect(() => {
-    //     getCurrentSong()
-    // });
 
     const getRoomDetails = () => {
         fetch('/api/get-room'+'?code='+roomCode)
@@ -120,6 +117,7 @@ function Room(props) {
             <Grid item xs={12} align="center">
                 <Typography variant="h4" component="h4">Code: {roomCode}</Typography>
             </Grid>
+            <MusicPlayer {...song} />
             <RenderSettingsButton />
             <Grid item xs={12} align="center">
                 <Button color="secondary" variant="contained" onClick={leaveButtonPressed}>Leave Room</Button>
