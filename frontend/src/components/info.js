@@ -9,21 +9,23 @@ const pages = {
   CREATE: "pages.create",
 };
 
-export default function Info(props) {
+export default function AppInfo(props) {
   const [page, setPage] = useState(pages.JOIN);
+  const [dummy, setDummy] = useState(false)
 
   function joinInfo() {
-    return "Join page";
+    return "House party creates a private space for people to get together virtually and listen to their favorite music. If there's an ongoing party you want to join, just ask your host for the room code. If you don't like the song being played, vote to skip it!";
   }
 
   function createInfo() {
-    return "Create page";
+    return "To host a house party, you must have a Spotify account to play music and a premium acount to control the music using play/pause on this app. A host can also set allowed guest behavior such as play/pause and number of votes needed to skip a song.";
   }
 
-  useEffect(() => {
-    console.log("ran");
-    return () => console.log("cleanup");
-  });
+//   useEffect(() => {
+//     //setDummy(true)
+//     console.log("ran"); //component mounted
+//     return () => console.log("cleanup"); //component will unmount
+//   });
 
   return (
     <Grid container spacing={1}>
@@ -32,7 +34,7 @@ export default function Info(props) {
           What is House Party?
         </Typography>
       </Grid>
-      <Grid item xs={12} align="center">
+      <Grid item xs={12} align="center" className="info-box">
         <Typography variant="body1">
           {page === pages.JOIN ? joinInfo() : createInfo()}
         </Typography>

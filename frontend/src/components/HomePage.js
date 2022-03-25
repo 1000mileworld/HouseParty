@@ -4,6 +4,7 @@ import CreateRoomPage from "./CreateRoomPage";
 import Room from "./Room";
 import { Grid, Button, ButtonGroup, Typography } from '@material-ui/core';
 import { BrowserRouter as Router, Routes, Route, Link, Navigate, Redirect } from 'react-router-dom';
+import AppInfo from './info';
 
 function HomePage(props) {
     const [roomCode, setRoomCode] = useState(null)
@@ -34,6 +35,7 @@ function HomePage(props) {
                 <Grid item xs={12} align="center">
                     <ButtonGroup disableElevation variant="contained" color="primary">
                         <Button color="primary" to="/join" component={Link}>Join a Room</Button>
+                        <Button color="default" to="/info" component={Link}>Info</Button>
                         <Button color="secondary" to="/create" component={Link}>Create a Room</Button>
                     </ButtonGroup>
                 </Grid>
@@ -48,6 +50,7 @@ function HomePage(props) {
             <Routes>
                 <Route path="/" element={<RenderHomePage/>}/>
                 <Route path="/join" element={<RoomJoinPage/>} />
+                <Route path="/info" element={<AppInfo/>} />
                 <Route path="/create" element={<CreateRoomPage/>} />
                 <Route path="/room/:roomCode" element={<Room leaveRoomCallback={clearRoomCode}/>} />
             </Routes>

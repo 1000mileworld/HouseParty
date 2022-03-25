@@ -3,20 +3,30 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Music Controller</title>
-    {% load static %}
+    <title>House Party</title>
+    
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
-    />
-    <link rel="stylesheet" type="text/css" href="{% static "css/index.css" %}"
-    />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"/>
+    
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static "css/index.css" %}"/>
+    <link rel="shortcut icon" type="image/jpg" href="{% static 'images/music.png' %}"/>
   </head>
   <body>
-    <div id="main">
-      <div id="app"></div>
+    <div id="gradient">
+      <div id="main">
+        <div id="app"></div>
+      </div>
     </div>
+
+    <footer>
+        <div>&copy; Joe Liang <span id="year"></span> | <span>House Party</span></div>
+    </footer>
+
+    <script>
+        var year = new Date().getFullYear();
+        document.querySelector("#year").innerText = year;
+    </script>
 
     <script src="{% static "frontend/main.js" %}"></script>
   </body>
