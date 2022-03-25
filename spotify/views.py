@@ -1,9 +1,8 @@
-from email.mime import base
 from django.shortcuts import render, redirect
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .util import update_or_create_user_tokens, is_spotify_authenticated, get_user_tokens
+from .util import *
 from api.models import Room
 from requests import Request, post
 
@@ -47,7 +46,9 @@ def spotify_callback(request,format=None):
     #send request for tokens
     response = post('https://accounts.spotify.com/api/token', data=token_data, headers=token_header).json()
     
-    #print(response)
+    print('Authorization token POST response')
+    print(response)
+    
     access_token = response.get('access_token') #store tokens
     token_type = response.get('token_type')
     refresh_token = response.get('refresh_token')
@@ -68,3 +69,47 @@ class IsAuthenticated(APIView):
         is_authenticated = is_spotify_authenticated(
             self.request.session.session_key)
         return Response({'status': is_authenticated}, status=status.HTTP_200_OK)
+
+class CurrentSong(APIView):
+    def get(self, request, format=None):
+        room_code = self.request.session.get('room_code')
+        room = Room.objects.filter(code=room_code)
+        if room.exists():
+            room = room[0]
+        else:
+            return Response({}, status=status.HTTP_404_NOT_FOUND)
+        host = room.host
+        endpoint = "player/currently-playing"
+        response = execute_spotify_api_request(host, endpoint)
+        
+        if 'error' in response or 'item' not in response: #if no song playing in spotify, just show blank
+            return Response({}, status=status.HTTP_204_NO_CONTENT)
+        
+        item = response.get('item')
+        duration = item.get('duration_ms')
+        progress = response.get('progress_ms')
+        album_cover = item.get('album').get('images')[0].get('url') #[0] is the largest image
+        is_playing = response.get('is_playing')
+        song_id = item.get('id')
+
+        artist_string = ""
+
+        #handle multiple artists for a song
+        for i, artist in enumerate(item.get('artists')):
+            if i > 0:
+                artist_string += ", "
+            name = artist.get('name')
+            artist_string += name
+
+        song = {
+            'title': item.get('name'),
+            'artist': artist_string,
+            'duration': duration,
+            'time': progress,
+            'image_url': album_cover,
+            'is_playing': is_playing,
+            'votes': 0,
+            'id': song_id
+        }
+
+        return Response(song, status=status.HTTP_200_OK)

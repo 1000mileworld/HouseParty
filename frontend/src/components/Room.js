@@ -7,11 +7,16 @@ function Room(props) {
     const { roomCode } = useParams(); //must use with react router dom v6, only compatible with function component
     const history = useNavigate();
 
-    const [votesToSkip, setVotesToSkip] = useState(2);
+    const [votesToSkip, setVotesToSkip] = useState(2); //updating state by its setter forces component to re-render, which calls all the api endpoints again
     const [guestCanPause, setGuestCanPause] = useState(false);
     const [isHost, setIsHost] = useState(false);
     const [showSettings, setShowSettings] = useState(false);
     const [spotifyAuthenticated, setSpotifyAuthenticated] = useState(false);
+    const [song, setSong] = useState({});
+
+    // useEffect(() => {
+    //     getCurrentSong()
+    // });
 
     const getRoomDetails = () => {
         fetch('/api/get-room'+'?code='+roomCode)
@@ -57,7 +62,24 @@ function Room(props) {
         })
     }
 
+    const getCurrentSong = () => {
+        fetch("/spotify/current-song")
+        .then((response) => {
+          if (!response.ok) {
+            return {};
+          } else {
+            return response.json();
+          }
+        })
+        .then((data) => {
+            setTimeout(function() {
+                setSong(data);
+                console.log(data);
+            },1000) //delay in setting state to prevent constant re-render
+        });
+    }
 
+    //---------------Components----------------
     let RenderSettingsButton = () => {
         if(isHost){
             return (
@@ -88,6 +110,7 @@ function Room(props) {
     }
 
     getRoomDetails()
+    getCurrentSong()
 
     if(showSettings) {
         return <RenderSettings />
@@ -96,15 +119,6 @@ function Room(props) {
         <Grid container spacing={1}>
             <Grid item xs={12} align="center">
                 <Typography variant="h4" component="h4">Code: {roomCode}</Typography>
-            </Grid>
-            <Grid item xs={12} align="center">
-                <Typography variant="h6" component="h6">Votes: {votesToSkip}</Typography>
-            </Grid>
-            <Grid item xs={12} align="center">
-                <Typography variant="h6" component="h6">Guest Can Pause: {guestCanPause.toString()}</Typography>
-            </Grid>
-            <Grid item xs={12} align="center">
-                <Typography variant="h6" component="h6">Host: {isHost.toString()}</Typography>
             </Grid>
             <RenderSettingsButton />
             <Grid item xs={12} align="center">
