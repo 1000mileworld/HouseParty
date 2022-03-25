@@ -156,7 +156,10 @@ class SkipSong(APIView):
             votes.delete()
             skip_song(room.host)
         else:
-           vote = Vote(user=self.request.session.session_key, room=room, song_id=room.current_song)
-           vote.save()
+            if Vote.objects.filter(user=self.request.session.session_key).exists():
+                print('User is trying to vote more than once!')
+            else:
+                vote = Vote(user=self.request.session.session_key, room=room, song_id=room.current_song)
+                vote.save()
 
         return Response({}, status.HTTP_204_NO_CONTENT)
