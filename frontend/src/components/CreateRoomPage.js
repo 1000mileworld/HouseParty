@@ -103,7 +103,7 @@ function CreateRoomPage(props) {
                     <FormHelperText component="span">
                         <div align="center">Guest Control of Playback State</div>
                     </FormHelperText>
-                    <RadioGroup row defaultValue={props.guestCanPause.toString()} onChange={handleGuestCanPauseChange}>
+                    <RadioGroup row defaultValue={props.guestCanPause.toString()} onChange={handleGuestCanPauseChange} id="radio-group">
                         <FormControlLabel
                             value='true'
                             control={<Radio color='primary'/>}
