@@ -60,35 +60,6 @@ function Room(props) {
         })
     }
 
-    //moved method to music player so it doesn't continuously re-render whole page while updating song state
-    const getCurrentSong = () => {
-        fetch("/spotify/current-song")
-        .then((response) => {
-          if (!response.ok) {
-            return {};
-          } else {
-            // try { 
-            //     //won't be able to parse response into json if no song playing
-            //     const json = JSON.parse(response); //doesn't work on legit response either
-            //   } catch (e) {
-            //     console.log("Please start playing a song in your Spotify account")
-            //     setHasSong(false);
-            //     return {}; //invalid json
-            //   }
-            // setHasSong(true);
-            
-            //response.json() returns a Promise
-            return response.json().catch(() => console.log('No song found playing in Spotify.'));
-          }
-        })
-        .then((data) => {
-            setTimeout(function() {
-                setSong(data);
-                //console.log(data);
-            },1) //delay in setting state to prevent constant re-render (but buttons need to change quickly)
-        });
-    }
-
     //---------------Components----------------
     let RenderSettingsButton = () => {
         if(isHost){
@@ -120,7 +91,6 @@ function Room(props) {
     }
 
     getRoomDetails()
-    //getCurrentSong()
 
     if(showSettings) {
         return <RenderSettings />
